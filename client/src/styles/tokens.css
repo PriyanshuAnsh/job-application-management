@@ -1,0 +1,55 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap");
+
+:root {
+  /* Backgrounds */
+  --bg:          #0f172a;
+  --bg-elevated: #1e293b;
+  --bg-card:     rgba(30, 41, 59, 0.55);
+  --bg-input:    rgba(15, 23, 42, 0.7);
+
+  /* Borders */
+  --border:       rgba(148, 163, 184, 0.1);
+  --border-focus: rgba(99, 102, 241, 0.6);
+
+  /* Text */
+  --text-1: #f1f5f9;
+  --text-2: #cbd5e1;
+  --text-3: #94a3b8;
+  --text-4: #64748b;
+
+  /* Accent — indigo */
+  --accent:        #6366f1;
+  --accent-hover:  #818cf8;
+  --accent-subtle: rgba(99, 102, 241, 0.12);
+  --accent-glow:   0 0 0 3px rgba(99, 102, 241, 0.25);
+
+  /* Status colors */
+  --s-wishlist-bg:   rgba(139, 92, 246, 0.14);
+  --s-wishlist-fg:   #a78bfa;
+  --s-applied-bg:    rgba(59, 130, 246, 0.14);
+  --s-applied-fg:    #60a5fa;
+  --s-interview-bg:  rgba(245, 158, 11, 0.14);
+  --s-interview-fg:  #fbbf24;
+  --s-offer-bg:      rgba(16, 185, 129, 0.14);
+  --s-offer-fg:      #34d399;
+  --s-rejected-bg:   rgba(100, 116, 139, 0.14);
+  --s-rejected-fg:   #94a3b8;
+
+  /* Typography */
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+
+  /* Shadows */
+  --shadow-sm:  0 1px 4px rgba(0, 0, 0, 0.5);
+  --shadow:     0 4px 24px rgba(0, 0, 0, 0.4);
+  --shadow-lg:  0 8px 48px rgba(0, 0, 0, 0.5);
+
+  /* Geometry */
+  --radius-sm: 6px;
+  --radius:    10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  /* Transitions */
+  --ease: 150ms ease;
+}

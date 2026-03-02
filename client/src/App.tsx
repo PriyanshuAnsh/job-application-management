@@ -1,134 +1,59 @@
 import { useEffect, useState } from "react";
-import {
-  createApplication,
-  deleteApplication,
-  getApplications,
-  getStats,
-  updateApplication
-} from "./api";
-import { AnalyticsPage } from "./AnalyticsPage";
-import { ApplicationsPage } from "./ApplicationsPage";
-import { CreateApplicationPayload, JobApplication, Stats } from "./types";
+import { ToastProvider } from "./context/ToastContext";
+import { useApplicationData } from "./hooks/useApplicationData";
+import { Header } from "./components/layout/Header";
+import { TopNav } from "./components/layout/TopNav";
+import { ApplicationsPage } from "./pages/ApplicationsPage";
+import { AnalyticsPage } from "./pages/AnalyticsPage";
 
 type RouteKey = "applications" | "analytics";
 
 function routeFromHash(hash: string): RouteKey {
-  if (hash === "#/analytics") {
-    return "analytics";
-  }
-
-  return "applications";
+  return hash === "#/analytics" ? "analytics" : "applications";
 }
 
-export function App() {
-  const [applications, setApplications] = useState<JobApplication[]>([]);
-  const [stats, setStats] = useState<Stats | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+function AppContent() {
   const [route, setRoute] = useState<RouteKey>(() => routeFromHash(window.location.hash));
+  const data = useApplicationData();
 
   useEffect(() => {
-    if (!window.location.hash) {
-      window.location.hash = "#/applications";
-    }
-
-    function onHashChange() {
-      setRoute(routeFromHash(window.location.hash));
-    }
-
+    if (!window.location.hash) window.location.hash = "#/applications";
+    const onHashChange = () => setRoute(routeFromHash(window.location.hash));
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
 
-  async function refreshData() {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const [allApplications, appStats] = await Promise.all([
-        getApplications({ status: "All", search: "" }),
-        getStats()
-      ]);
-
-      setApplications(allApplications);
-      setStats(appStats);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load data");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    void refreshData();
-  }, []);
-
-  async function handleCreate(payload: CreateApplicationPayload) {
-    setError(null);
-
-    try {
-      await createApplication(payload);
-      await refreshData();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save application");
-    }
-  }
-
-  async function handleStatusChange(id: string, nextStatus: JobApplication["status"]) {
-    setError(null);
-
-    try {
-      await updateApplication(id, { status: nextStatus });
-      await refreshData();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update status");
-    }
-  }
-
-  async function handleDelete(id: string) {
-    setError(null);
-
-    try {
-      await deleteApplication(id);
-      await refreshData();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete application");
-    }
-  }
-
   return (
     <main className="layout">
-      <div className="orb orb-one" />
-      <div className="orb orb-two" />
-
-      <header className="hero">
-        <p className="eyebrow">Career OS</p>
-        <h1>Job Application Manager</h1>
-        <p>Track roles, outcomes, and pipeline progress in one focused command center.</p>
-      </header>
-
-      <nav className="top-nav">
-        <a href="#/applications" className={route === "applications" ? "nav-link active" : "nav-link"}>
-          Applications
-        </a>
-        <a href="#/analytics" className={route === "analytics" ? "nav-link active" : "nav-link"}>
-          Analytics
-        </a>
-      </nav>
+      <Header />
+      <TopNav route={route} />
 
       {route === "applications" ? (
         <ApplicationsPage
-          applications={applications}
-          stats={stats}
-          loading={loading}
-          error={error}
-          onCreate={handleCreate}
-          onStatusChange={handleStatusChange}
-          onDelete={handleDelete}
+          applications={data.applications}
+          stats={data.stats}
+          loading={data.loading}
+          onCreate={data.handleCreate}
+          onStatusChange={data.handleStatusChange}
+          onDelete={data.handleDelete}
+          onUpdate={data.handleUpdate}
         />
       ) : (
-        <AnalyticsPage applications={applications} stats={stats} loading={loading} error={error} />
+        <AnalyticsPage
+          applications={data.applications}
+          stats={data.stats}
+          loading={data.loading}
+          error={null}
+        />
       )}
     </main>
+  );
+}
+
+export function App() {
+  return (
+    <ToastProvider>
+      <AppContent />
+    </ToastProvider>
   );
 }
