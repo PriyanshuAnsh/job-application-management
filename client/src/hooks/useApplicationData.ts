@@ -1,17 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 import {
     createApplication,
     deleteApplication,
     getApplications,
     updateApplication,
-} from "../lib/api/applications";
-import { getStats } from "../lib/api/stats";
-import { useToast } from "../context/ToastContext";
-import type { CreateApplicationPayload, JobApplication } from "../types/application";
-import type { Stats } from "../types/stats";
+} from "@/lib/api/applications";
+import { getStats } from "@/lib/api/stats";
+import type { CreateApplicationPayload, JobApplication } from "@/types/application";
+import type { Stats } from "@/types/stats";
 
 export function useApplicationData() {
-    const { addToast } = useToast();
     const [applications, setApplications] = useState<JobApplication[]>([]);
     const [stats, setStats] = useState<Stats | null>(null);
     const [loading, setLoading] = useState(false);
@@ -26,11 +25,11 @@ export function useApplicationData() {
             setApplications(apps);
             setStats(appStats);
         } catch (err) {
-            addToast("error", err instanceof Error ? err.message : "Failed to load data");
+            toast.error(err instanceof Error ? err.message : "Failed to load data");
         } finally {
             setLoading(false);
         }
-    }, [addToast]);
+    }, []);
 
     useEffect(() => {
         void refreshData();
@@ -41,13 +40,13 @@ export function useApplicationData() {
             try {
                 await createApplication(payload);
                 await refreshData();
-                addToast("success", `Application at ${payload.company} saved!`);
+                toast.success(`Application at ${payload.company} saved!`);
             } catch (err) {
-                addToast("error", err instanceof Error ? err.message : "Failed to save application");
-                throw err; // re-throw so the form knows about it
+                toast.error(err instanceof Error ? err.message : "Failed to save application");
+                throw err;
             }
         },
-        [refreshData, addToast]
+        [refreshData]
     );
 
     const handleUpdate = useCallback(
@@ -55,13 +54,13 @@ export function useApplicationData() {
             try {
                 await updateApplication(id, payload);
                 await refreshData();
-                addToast("success", "Application updated");
+                toast.success("Application updated");
             } catch (err) {
-                addToast("error", err instanceof Error ? err.message : "Failed to update application");
+                toast.error(err instanceof Error ? err.message : "Failed to update");
                 throw err;
             }
         },
-        [refreshData, addToast]
+        [refreshData]
     );
 
     const handleStatusChange = useCallback(
@@ -76,22 +75,14 @@ export function useApplicationData() {
             try {
                 await deleteApplication(id);
                 await refreshData();
-                addToast("success", `Deleted "${company}"`);
+                toast.success(`Deleted "${company}"`);
             } catch (err) {
-                addToast("error", err instanceof Error ? err.message : "Failed to delete application");
+                toast.error(err instanceof Error ? err.message : "Failed to delete");
                 throw err;
             }
         },
-        [refreshData, addToast]
+        [refreshData]
     );
 
-    return {
-        applications,
-        stats,
-        loading,
-        handleCreate,
-        handleUpdate,
-        handleStatusChange,
-        handleDelete,
-    };
+    return { applications, stats, loading, handleCreate, handleUpdate, handleStatusChange, handleDelete };
 }

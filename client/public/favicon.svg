@@ -1,12 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- Indigo rounded background -->
-  <rect width="32" height="32" rx="8" fill="#6366f1"/>
+  <!-- JARVIS cyan rounded background -->
+  <rect width="32" height="32" rx="7" fill="#020c1b"/>
+  <!-- Outer glow ring -->
+  <rect width="32" height="32" rx="7" fill="none" stroke="#06b6d4" stroke-width="1" opacity="0.6"/>
   <!-- Briefcase body -->
-  <rect x="6" y="13" width="20" height="13" rx="2.5" fill="none" stroke="#fff" stroke-width="1.6"/>
+  <rect x="6" y="13" width="20" height="13" rx="2.5" fill="none" stroke="#06b6d4" stroke-width="1.6"/>
   <!-- Briefcase handle -->
-  <path d="M12 13v-2a2 2 0 012-2h4a2 2 0 012 2v2" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Center divider line -->
-  <line x1="16" y1="13" x2="16" y2="26" stroke="#fff" stroke-width="1.4" stroke-opacity="0.4"/>
+  <path d="M12 13v-2a2 2 0 012-2h4a2 2 0 012 2v2" fill="none" stroke="#06b6d4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Center divider -->
+  <line x1="16" y1="13" x2="16" y2="26" stroke="#06b6d4" stroke-width="1.2" opacity="0.35"/>
   <!-- Horizontal clasp -->
-  <line x1="6" y1="19" x2="26" y2="19" stroke="#fff" stroke-width="1.4" stroke-opacity="0.4"/>
+  <line x1="6" y1="19" x2="26" y2="19" stroke="#06b6d4" stroke-width="1.2" opacity="0.35"/>
+  <!-- Corner accent dots -->
+  <circle cx="4" cy="4" r="1" fill="#06b6d4" opacity="0.4"/>
+  <circle cx="28" cy="4" r="1" fill="#06b6d4" opacity="0.4"/>
+  <circle cx="4" cy="28" r="1" fill="#06b6d4" opacity="0.4"/>
+  <circle cx="28" cy="28" r="1" fill="#06b6d4" opacity="0.4"/>
 </svg>

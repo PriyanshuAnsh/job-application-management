@@ -1,18 +1,25 @@
-import type { ApplicationStatus } from "../../types/application";
+import { Badge } from "@/components/ui/badge";
+import type { JobApplication } from "@/types/application";
 
-const CONFIG: Record<ApplicationStatus, { label: string; cls: string }> = {
-    Wishlist: { label: "Wishlist", cls: "badge--wishlist" },
-    Applied: { label: "Applied", cls: "badge--applied" },
-    Interview: { label: "Interview", cls: "badge--interview" },
-    Offer: { label: "Offer", cls: "badge--offer" },
-    Rejected: { label: "Rejected", cls: "badge--rejected" },
+const variantMap: Record<JobApplication["status"], string> = {
+    Wishlist: "jarvis-badge-wishlist",
+    Applied: "jarvis-badge-applied",
+    Interview: "jarvis-badge-interview",
+    Offer: "jarvis-badge-offer",
+    Rejected: "jarvis-badge-rejected",
 };
 
 type StatusBadgeProps = {
-    status: ApplicationStatus;
+    status: JobApplication["status"];
 };
 
 export function StatusBadge({ status }: StatusBadgeProps) {
-    const { label, cls } = CONFIG[status];
-    return <span className={`badge ${cls}`}>{label}</span>;
+    return (
+        <Badge
+            className={`${variantMap[status]} rounded-full px-2.5 py-0.5 text-[0.65rem] font-bold uppercase tracking-widest border`}
+            style={{ fontFamily: "var(--font-display)" }}
+        >
+            {status}
+        </Badge>
+    );
 }

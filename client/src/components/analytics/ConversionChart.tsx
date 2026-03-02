@@ -1,51 +1,61 @@
 import {
-    Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
 } from "recharts";
-import { EmptyState } from "../ui/EmptyState";
-
-type FlowEntry = { stage: string; count: number };
-
-const TOOLTIP_STYLE = {
-    background: "#1e293b",
-    border: "1px solid rgba(148,163,184,0.15)",
-    borderRadius: "8px",
-    color: "#f1f5f9",
-    fontSize: "13px",
-};
-
-const TICK = { fill: "#64748b", fontSize: 11 };
-const BAR_COLORS = ["#6366f1", "#f59e0b", "#10b981"];
 
 type ConversionChartProps = {
-    data: FlowEntry[];
+    data: { stage: string; count: number }[];
+};
+
+const STAGE_COLORS: Record<string, string> = {
+    Applied: "#06b6d4",
+    Interview: "#f59e0b",
+    Offer: "#10b981",
 };
 
 export function ConversionChart({ data }: ConversionChartProps) {
-    const hasData = data.some((d) => d.count > 0);
-
     return (
-        <article className="chart-card">
-            <h2 className="chart-card__title">Conversion Flow</h2>
-            <p className="chart-card__sub">From applications to interviews and offers.</p>
-            {hasData ? (
-                <div className="chart-wrap" role="img" aria-label="Bar chart of application conversion">
-                    <ResponsiveContainer width="100%" height={280}>
-                        <BarChart data={data} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-                            <CartesianGrid strokeDasharray="4 4" stroke="rgba(148,163,184,0.08)" vertical={false} />
-                            <XAxis dataKey="stage" tick={TICK} axisLine={false} tickLine={false} />
-                            <YAxis allowDecimals={false} tick={TICK} axisLine={false} tickLine={false} />
-                            <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: "rgba(99,102,241,0.08)" }} />
-                            <Bar dataKey="count" radius={[6, 6, 0, 0]} maxBarSize={56}>
-                                {data.map((entry, i) => (
-                                    <Cell key={entry.stage} fill={BAR_COLORS[i % BAR_COLORS.length]} fillOpacity={0.9} />
-                                ))}
-                            </Bar>
-                        </BarChart>
-                    </ResponsiveContainer>
-                </div>
-            ) : (
-                <EmptyState />
-            )}
-        </article>
+        <ResponsiveContainer width="100%" height={260}>
+            <BarChart data={data} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                <defs>
+                    {Object.entries(STAGE_COLORS).map(([stage, color]) => (
+                        <linearGradient key={stage} id={`bar-${stage}`} x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor={color} stopOpacity={0.9} />
+                            <stop offset="100%" stopColor={color} stopOpacity={0.3} />
+                        </linearGradient>
+                    ))}
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(6,182,212,0.08)" vertical={false} />
+                <XAxis
+                    dataKey="stage"
+                    tick={{ fill: "rgba(6,182,212,0.5)", fontSize: 11, fontFamily: "var(--font-display)", fontWeight: 700 }}
+                    axisLine={false} tickLine={false}
+                />
+                <YAxis
+                    tick={{ fill: "rgba(6,182,212,0.4)", fontSize: 11, fontFamily: "var(--font-mono)" }}
+                    axisLine={false} tickLine={false} allowDecimals={false}
+                />
+                <Tooltip
+                    cursor={{ fill: "rgba(6,182,212,0.05)" }}
+                    contentStyle={{
+                        background: "var(--jarvis-surface-2)",
+                        border: "1px solid var(--jarvis-cyan-border)",
+                        borderRadius: "0.5rem",
+                        color: "var(--jarvis-text)",
+                        fontFamily: "var(--font-display)",
+                        fontSize: "0.85rem",
+                    }}
+                />
+                <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                    {data.map((entry) => (
+                        <Cell
+                            key={entry.stage}
+                            fill={`url(#bar-${entry.stage})`}
+                            stroke={STAGE_COLORS[entry.stage] ?? "rgba(6,182,212,0.3)"}
+                            strokeWidth={1}
+                        />
+                    ))}
+                </Bar>
+            </BarChart>
+        </ResponsiveContainer>
     );
 }

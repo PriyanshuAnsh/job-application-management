@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { AnimatePresence } from "framer-motion";
+import { Toaster } from "sonner";
 import { ToastProvider } from "./context/ToastContext";
 import { useApplicationData } from "./hooks/useApplicationData";
 import { Header } from "./components/layout/Header";
 import { TopNav } from "./components/layout/TopNav";
 import { ApplicationsPage } from "./pages/ApplicationsPage";
 import { AnalyticsPage } from "./pages/AnalyticsPage";
+import { SplashScreen } from "./components/ui/SplashScreen";
 
 type RouteKey = "applications" | "analytics";
 
@@ -24,7 +27,7 @@ function AppContent() {
   }, []);
 
   return (
-    <main className="layout">
+    <div className="jarvis-layout">
       <Header />
       <TopNav route={route} />
 
@@ -46,14 +49,37 @@ function AppContent() {
           error={null}
         />
       )}
-    </main>
+    </div>
   );
 }
 
 export function App() {
+  const [splashDone, setSplashDone] = useState(false);
+  const handleSplashDone = useCallback(() => setSplashDone(true), []);
+
   return (
     <ToastProvider>
+      <AnimatePresence mode="wait">
+        {!splashDone && (
+          <SplashScreen key="splash" onDone={handleSplashDone} />
+        )}
+      </AnimatePresence>
+
       <AppContent />
+
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            background: "var(--jarvis-surface-2)",
+            border: "1px solid var(--jarvis-cyan-border)",
+            color: "var(--jarvis-text)",
+            fontFamily: "var(--font-display)",
+            fontWeight: 600,
+            fontSize: "0.875rem",
+          },
+        }}
+      />
     </ToastProvider>
   );
 }

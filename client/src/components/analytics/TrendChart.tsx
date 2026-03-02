@@ -1,60 +1,51 @@
 import {
-    Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis
+    AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
-import { EmptyState } from "../ui/EmptyState";
-
-type TrendEntry = { month: string; applications: number };
-
-const TOOLTIP_STYLE = {
-    background: "#1e293b",
-    border: "1px solid rgba(148,163,184,0.15)",
-    borderRadius: "8px",
-    color: "#f1f5f9",
-    fontSize: "13px",
-};
-
-const TICK = { fill: "#64748b", fontSize: 11 };
 
 type TrendChartProps = {
-    data: TrendEntry[];
+    data: { month: string; count: number }[];
 };
 
 export function TrendChart({ data }: TrendChartProps) {
-    const hasData = data.some((d) => d.applications > 0);
-
     return (
-        <article className="chart-card">
-            <h2 className="chart-card__title">Application Trend</h2>
-            <p className="chart-card__sub">Applications submitted in the last 8 months.</p>
-            {hasData ? (
-                <div className="chart-wrap" role="img" aria-label="Area chart of monthly application count">
-                    <ResponsiveContainer width="100%" height={280}>
-                        <AreaChart data={data} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-                            <defs>
-                                <linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.35} />
-                                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
-                                </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="4 4" stroke="rgba(148,163,184,0.08)" />
-                            <XAxis dataKey="month" tick={TICK} axisLine={false} tickLine={false} />
-                            <YAxis allowDecimals={false} tick={TICK} axisLine={false} tickLine={false} />
-                            <Tooltip contentStyle={TOOLTIP_STYLE} />
-                            <Area
-                                type="monotone"
-                                dataKey="applications"
-                                stroke="#6366f1"
-                                strokeWidth={2.5}
-                                fill="url(#trendGrad)"
-                                dot={{ r: 4, fill: "#6366f1", strokeWidth: 0 }}
-                                activeDot={{ r: 6, fill: "#818cf8", strokeWidth: 0 }}
-                            />
-                        </AreaChart>
-                    </ResponsiveContainer>
-                </div>
-            ) : (
-                <EmptyState />
-            )}
-        </article>
+        <ResponsiveContainer width="100%" height={260}>
+            <AreaChart data={data} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                <defs>
+                    <linearGradient id="jarvis-trend-fill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
+                    </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(6,182,212,0.08)" vertical={false} />
+                <XAxis
+                    dataKey="month"
+                    tick={{ fill: "rgba(6,182,212,0.4)", fontSize: 11, fontFamily: "var(--font-display)" }}
+                    axisLine={false} tickLine={false}
+                />
+                <YAxis
+                    tick={{ fill: "rgba(6,182,212,0.4)", fontSize: 11, fontFamily: "var(--font-mono)" }}
+                    axisLine={false} tickLine={false} allowDecimals={false}
+                />
+                <Tooltip
+                    contentStyle={{
+                        background: "var(--jarvis-surface-2)",
+                        border: "1px solid var(--jarvis-cyan-border)",
+                        borderRadius: "0.5rem",
+                        color: "var(--jarvis-text)",
+                        fontFamily: "var(--font-display)",
+                        fontSize: "0.85rem",
+                    }}
+                />
+                <Area
+                    type="monotone"
+                    dataKey="count"
+                    stroke="#06b6d4"
+                    strokeWidth={2}
+                    fill="url(#jarvis-trend-fill)"
+                    dot={{ fill: "#06b6d4", strokeWidth: 0, r: 3 }}
+                    activeDot={{ fill: "#38bdf8", r: 5 }}
+                />
+            </AreaChart>
+        </ResponsiveContainer>
     );
 }
